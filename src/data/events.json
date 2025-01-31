@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "id": "doshisha-150th",
+      "date": "2025-11-29",
+      "title": "同志社創立150周年",
+      "type": "anniversary"
+    },
+    {
+      "id": "foundation-day",
+      "date": "2024-05-15",
+      "title": "創立記念日",
+      "type": "anniversary"
+    },
+    {
+      "id": "entrance-exam",
+      "date": "2024-07-20",
+      "title": "受験日",
+      "type": "exam"
+    }
+  ]
+}
