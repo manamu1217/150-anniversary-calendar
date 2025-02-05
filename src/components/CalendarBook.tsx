@@ -1,0 +1,144 @@
+import React, { useEffect, useState } from "react";
+import HTMLFlipBook from "react-pageflip";
+import { useCalendarData } from "../hooks/useCalendarData";
+import Calendar from "./Calendar";
+
+// 日付データの型
+type Day = {
+  id: number;
+  date: Date;
+};
+
+// 画面サイズ情報の型
+type Dimensions = {
+  isMobile: boolean;
+  width: number;
+  height: number;
+};
+
+const Book: React.FC = () => {
+  const { loading, error } = useCalendarData();
+  const [days, setDays] = useState<Day[]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [dimensions, setDimensions] = useState<Dimensions>({
+    isMobile: false,
+    width: 800,
+    height: 800,
+  });
+
+  useEffect(() => {
+    const updateDimensions = (): void => {
+      const isMobile = window.innerWidth < 768;
+      setDimensions({
+        isMobile,
+        width: isMobile ? window.innerWidth : window.innerWidth / 2,
+        height: window.innerHeight,
+      });
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  useEffect(() => {
+    if (days.length === 0) {
+      const baseDate: Date = new Date(2024, 0, 1);
+      const today: Date = new Date();
+      const diffDays: number = Math.floor(
+        (today.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      const newDays: Day[] = [];
+      for (let i = diffDays - 19; i <= diffDays; i++) {
+        const date = new Date(baseDate);
+        date.setDate(baseDate.getDate() + i);
+        newDays.push({ id: i, date });
+      }
+
+      setDays(newDays);
+      setCurrentIndex(newDays.length - 1);
+    }
+  }, []);
+
+  const getAdditionalDays = (): void => {
+    if (days.length === 0) return;
+    const currentId: number = days[0].id;
+    const baseDate: Date = new Date(2024, 0, 1);
+    const date: Date = new Date(baseDate);
+    date.setDate(date.getDate() + currentId - 1);
+
+    const newDay: Day = { id: currentId - 1, date };
+    setDays((prevDays) => [newDay, ...prevDays]);
+    setCurrentIndex(0);
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  const handlePrevDay = (): void => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else {
+      getAdditionalDays();
+    }
+  };
+
+  const handleNextDay = (): void => {
+    const today: Date = new Date();
+    const currentDate: Date | undefined = days[currentIndex]?.date;
+
+    if (
+      currentDate &&
+      currentIndex < days.length - 1 &&
+      days[currentIndex + 1].date <= today
+    ) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center w-full min-h-screen">
+      <HTMLFlipBook
+        width={dimensions.width}
+        height={dimensions.height}
+        startPage={dimensions.isMobile ? days.length - 1 : 2 * days.length - 1}
+        className="flipbook-container"
+        maxShadowOpacity={0.5}
+        mobileScrollSupport={true}
+        drawShadow={true}
+      >
+        {days.flatMap(
+          (day) =>
+            [
+              !dimensions.isMobile ? (
+                <div
+                  className="flex flex-col items-center justify-center w-full h-full bg-white border border-black"
+                  key={`cover-${day.id}`}
+                >
+                  <h1 className="flex flex-col items-center justify-center text-purple-600 text-2xl md:text-4xl font-bold h-full">
+                    Doshisha University
+                  </h1>
+                </div>
+              ) : null,
+              <div key={`calendar-${day.id}`} className="demoPage">
+                <Calendar
+                  currentDay={day}
+                  onPrevDay={handlePrevDay}
+                  onNextDay={handleNextDay}
+                  loading={loading}
+                />
+              </div>,
+            ].filter((el): el is JSX.Element => el !== null) // 型安全に null を除去
+        )}
+      </HTMLFlipBook>
+    </div>
+  );
+};
+
+export default Book;
