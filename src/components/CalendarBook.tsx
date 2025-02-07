@@ -50,7 +50,7 @@ const Book: React.FC = () => {
       );
 
       const newDays: Day[] = [];
-      for (let i = diffDays - 19; i <= diffDays; i++) {
+      for (let i = diffDays - 49; i <= diffDays; i++) {
         const date = new Date(baseDate);
         date.setDate(baseDate.getDate() + i);
         newDays.push({ id: i, date });
