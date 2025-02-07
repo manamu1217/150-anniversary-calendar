@@ -107,7 +107,9 @@ const Book: React.FC = () => {
       <HTMLFlipBook
         width={dimensions.width}
         height={dimensions.height}
-        startPage={dimensions.isMobile ? days.length - 1 : 2 * days.length - 1}
+        startPage={
+          dimensions.isMobile ? days.length - 2 : 2 * (days.length - 1) - 1
+        }
         className="flipbook-container"
         maxShadowOpacity={0.5}
         mobileScrollSupport={true}
