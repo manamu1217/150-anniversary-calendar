@@ -73,26 +73,6 @@ const Calendar: React.FC<CalendarProps> = ({
               {messages[index_msg]}
             </p>
           </div>
-
-          {/* Navigation */}
-          <div className="absolute bottom-6 left-0 right-0 px-6 flex items-center justify-between">
-            <button
-              onClick={onPrevDay}
-              className="p-3 rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
-            >
-              <ChevronLeft className="w-8 h-8 text-white" />
-            </button>
-
-            <button
-              onClick={onNextDay}
-              disabled={!canGoNext}
-              className={`p-3 rounded-full backdrop-blur-sm transition-colors ${
-                canGoNext ? "bg-white/10 hover:bg-white/20" : "hidden"
-              }`}
-            >
-              <ChevronRight className="w-8 h-8 text-white" />
-            </button>
-          </div>
         </div>
       </div>
 
