@@ -1,7 +1,7 @@
 # calendar
 # 環境構築
 ```bash
-ライブラリーのインストール
+# ライブラリーのインストール
 npm i
 # サーバの起動
 npm run dev
