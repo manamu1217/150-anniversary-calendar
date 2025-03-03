@@ -120,10 +120,10 @@ const Book: React.FC = () => {
             [
               !dimensions.isMobile ? (
                 <div
-                  className="flex flex-col items-center justify-center w-full h-full bg-white border border-black"
+                  className="flex flex-col items-center justify-center w-full h-full bg-white"
                   key={`cover-${day.id}`}
                 >
-                  <h1 className="flex flex-col items-center justify-center text-purple-600 text-2xl md:text-4xl font-bold h-full">
+                  <h1 className="flex flex-col items-center justify-center text-black-600 text-2xl md:text-4xl font-medium h-full font-yuji">
                     Doshisha University
                   </h1>
                 </div>

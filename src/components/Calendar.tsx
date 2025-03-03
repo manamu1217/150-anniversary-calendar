@@ -1,5 +1,4 @@
-import React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { CalendarDay } from "../types";
 import { isToday } from "../utils/dateUtils";
 import CountdownTimer from "./CountdownTimer";
@@ -13,69 +12,108 @@ interface CalendarProps {
   loading?: boolean;
 }
 
-function isSameDate(date1: Date, date2: Date): boolean {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
-
 const Calendar: React.FC<CalendarProps> = ({
   currentDay,
   onPrevDay,
   onNextDay,
   loading = false,
 }) => {
-  console.log(currentDay);
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   if (loading || !currentDay) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        <h1 className="text-white text-3xl font-bold">Loading...</h1>
       </div>
     );
   }
 
-  const canGoNext = !isSameDate(currentDay.date, new Date());
+  // 残り日数計算
+  const eventDate = new Date("2025-11-29");
+  const remainingDays = Math.ceil(
+    (eventDate.getTime() - currentDay.date.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  // 画像とメッセージの取得
   const index_img = currentDay.id % images.length;
   const index_msg = currentDay.id % messages.length;
+  const formatMessage = (message: string, chunkSize: number = 15) => {
+    const result = [];
+    let currentChunk = "";
+  
+    for (let i = 0; i < message.length; i++) {
+      currentChunk += message[i];
+  
+      // 句読点またはスペースで改行
+      if (message[i] === "。" || message[i] === "、" || message[i] === "　") {
+        result.push(currentChunk);
+        currentChunk = "";
+      } 
+      // 15文字以上なら強制改行
+      else if (currentChunk.length >= chunkSize) {
+        result.push(currentChunk);
+        currentChunk = "";
+      }
+    }
+  
+    // 残りの文字を追加
+    if (currentChunk) {
+      result.push(currentChunk);
+    }
+  
+    return result;
+  };
+  
+  const messageLines = formatMessage(messages[index_msg], 20);
+  
+  return (            
+    <div className="fixed inset-0 flex justify-center items-center relative overflow-hidden h-full bg-black font-kaisei"
+         style={{ backgroundImage: `url(/img/${images[index_img]})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+      {/* 斜めの色付きオーバーレイ */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/40 to-blue-500/40 "></div>
+      <div className="absolute top-0 left-0 w-full h-1/6 bg-gradient-to-r from-pink-500/30 to-white-500/50"></div>
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-yellow-500/50 to-white-500/50"></div>
 
-  return (
-    <div className="fixed inset-0 bg-black">
-      <div className="relative h-full">
-        <img
-          src={"/img/" + images[index_img]}
-          alt="Daily"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60">
-          {/* Header */}
-          <div className="absolute top-24 left-0 right-0 text-white text-center">
-            <h2 className="text-4xl md:text-6xl font-bold mb-2">
-              {currentDay.date.toLocaleDateString("ja-JP", {
-                month: "long",
-                day: "numeric",
-              })}
-            </h2>
-            <p className="text-xl md:text-2xl">
-              {currentDay.date.toLocaleDateString("ja-JP", { weekday: "long" })}
-            </p>
-            {isToday(currentDay.date) && (
-              <span className="inline-block mt-2 px-4 py-1 bg-green-500 text-white rounded-full text-sm font-medium">
-                Today
-              </span>
-            )}
-          </div>
 
-          {/* Message - Moved higher up */}
-          <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 text-white text-center px-6">
-            <p className="text-xl md:text-3xl font-medium px-6 py-3 bg-black/30 rounded-lg backdrop-blur-sm inline-block">
-              {messages[index_msg]}
-            </p>
-          </div>
-        </div>
+      {/* 左上の日時表示 */}
+      <div className="absolute top-4 left-4 text-white text-base sm:text-2lg md:text-3xl lg:text-5xl xl:text-8xl font-bold leading-loose md:leading-[2] lg:leading-[2.5] xl:leading-[3]">
+  <p className="text-2xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl mb-2">{currentDay.date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()}</p>
+  <p className="text-4xl sm:text-2xl md:text-4xl lg:text-6xl xl:text-8xl mb-2">{currentDay.date.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }).toUpperCase()}</p>
+  <p className="text-2xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl mb-2">-{time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}-</p>
+</div>
+
+      {/* 右上に縦書きメッセージ（原稿用紙風表示） */}
+      <div className="absolute top-4 right-4 font-medium text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl  border-black border-double p-6 bg-white font-kaisei tracking-wide"
+           style={{
+             display: "inline-block",
+             writingMode: "vertical-rl",
+             backgroundImage: "linear-gradient(180deg,rgb(255, 255, 255),rgb(255, 255, 255))",
+             backgroundClip: "text",
+             color: "transparent",
+             WebkitBackgroundClip: "text",
+             WebkitTextFillColor: "transparent",
+           }}>
+        {messageLines.map((line, index) => (
+          <p key={index} className="mb-32" style={{ marginTop: `${index * 6}rem`, paddingRight: '0.2rem', lineHeight: '1.5' }}>
+            {line}
+          </p>
+        ))}
       </div>
 
+
+      {/* 残り日数を縦書きで左下に表示
+      <div className="absolute bottom-4 left-4 text-white text-4xl font-medium font-yuji" style={{ writingMode: "vertical-rl" }}>
+        ― 残り{remainingDays-1}日
+      </div> */}
+
+      {/* カウントダウンタイマー */}
       <CountdownTimer />
     </div>
   );
