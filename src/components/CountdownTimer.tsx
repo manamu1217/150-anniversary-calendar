@@ -32,8 +32,8 @@ const CountdownTimer: React.FC = () => {
   if (upcomingEvents.length === 0) return null;
 
   return (
-    <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 w-11/12 max-w-md">
-      <div className="bg-black/70 backdrop-blur-sm rounded-lg p-4 space-y-2 text-white">
+    <div className="fixed bottom-8 sm:bottom-16 md:bottom-28 left-1/2 transform -translate-x-1/2 w-11/12 max-w-md">
+      <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4 space-y-2 text-white">
         {upcomingEvents.map((event) => (
           <div
             key={event.title}

@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face {
+  font-family: 'Yuji_Syukyu';
+  src: url('/fonts/YujiSyuku-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'KaiseiOpti';
+  src: url('/fonts/KaiseiOpti-Medium.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.font-kaisei {
+  font-family: 'KaiseiOpti', sans-serif;
+}
