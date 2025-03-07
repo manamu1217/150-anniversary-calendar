@@ -71,7 +71,8 @@ const Calendar: React.FC<CalendarProps> = ({
     return result;
   };
 
-  const messageLines = formatMessage(messages[index_msg], 20);
+  const messageLines = formatMessage(messages[index_msg][0], 15);
+  const messageSignature = formatMessage(messages[index_msg][1], 15);
 
   return (
     <div
@@ -118,6 +119,19 @@ const Calendar: React.FC<CalendarProps> = ({
             key={index}
             className="mb-32"
             style={{ marginTop: `${index * 4}rem`, paddingRight: "0.2rem", lineHeight: "1.5" }}
+          >
+            {line}
+          </p>
+        ))}
+        {messageSignature.map((line, index) => (
+          <p
+            key={index}
+            className="mb-32 text-lg"
+            style={{
+              marginTop: `${(messageLines.length + index + 4) * 2}rem`,
+              paddingRight: "0.2rem",
+              lineHeight: "1.5",
+            }}
           >
             {line}
           </p>
