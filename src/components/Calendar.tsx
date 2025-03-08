@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CalendarDay } from "../types";
 import { isToday } from "../utils/dateUtils";
 import CountdownTimer from "./CountdownTimer";
-import { messages } from "../data/data";
+import { imagelength, messages } from "../data/data";
 import { images } from "../data/data";
 
 interface CalendarProps {
@@ -42,7 +42,7 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 
   // 画像とメッセージの取得
-  const index_img = currentDay.id % images.length;
+  const index_img = currentDay.id % imagelength;
   const index_msg = currentDay.id % messages.length;
   const formatMessage = (message: string, chunkSize: number = 15) => {
     const result = [];
@@ -78,7 +78,7 @@ const Calendar: React.FC<CalendarProps> = ({
     <div
       className="fixed inset-0 flex justify-center items-center relative overflow-hidden h-full bg-black font-kaisei"
       style={{
-        backgroundImage: `url(/img/${images[index_img]})`,
+        backgroundImage: `url(/img/photo${index_img + 1}.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -139,7 +139,7 @@ const Calendar: React.FC<CalendarProps> = ({
       </div>
 
       <div className="absolute bottom-1 left-4 text-white text-base font-medium opacity-80 font-yuji">
-        copyright Doshisha University
+        &copy; Doshisha University
       </div>
 
       {/* カウントダウンタイマー */}

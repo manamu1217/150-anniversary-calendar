@@ -15,6 +15,8 @@ export const images: string[] = [
   "photo14.jpg",
 ];
 
+export const imagelength: number = 252;
+
 export const messages: string[][] = [
   [
     "信仰を以て学校の基礎となし、学術を以て左右の翼と為し・・・",
