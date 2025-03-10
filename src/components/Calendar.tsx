@@ -75,7 +75,7 @@ const Calendar: React.FC<CalendarProps> = ({
   };
 
   const messageLines = formatMessage(messages[index_msg][0], 15);
-  const messageSignature = formatMessage(messages[index_msg][1], 15);
+  const messageSignature = formatMessage(messages[index_msg][1], 16);
 
   return (
     <div
