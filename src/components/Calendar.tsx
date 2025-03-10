@@ -52,7 +52,10 @@ const Calendar: React.FC<CalendarProps> = ({
       currentChunk += message[i];
 
       // 句読点またはスペースで改行
-      if (message[i] === "。" || message[i] === "、" || message[i] === "　") {
+      if (
+        (message[i] === "。" || message[i] === "、" || message[i] === "　") &&
+        currentChunk.length >= 8
+      ) {
         result.push(currentChunk);
         currentChunk = "";
       }
