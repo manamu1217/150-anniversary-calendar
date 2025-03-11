@@ -108,8 +108,8 @@ const Calendar: React.FC<CalendarProps> = ({
       <div
         className="absolute top-4 right-4 font-medium text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl  border-black border-double p-6 bg-white font-kaisei tracking-wide"
         style={{
-          display: "inline-block",
           writingMode: "vertical-rl",
+          textOrientation: "upright",
           backgroundImage: "linear-gradient(180deg,rgb(255, 255, 255),rgb(255, 255, 255))",
           backgroundClip: "text",
           color: "transparent",
@@ -142,7 +142,8 @@ const Calendar: React.FC<CalendarProps> = ({
       </div>
 
       <div className="absolute bottom-1 left-4 text-white text-base font-medium opacity-80 font-yuji">
-        &copy; Doshisha University
+        <span style={{ fontSize: "1rem" }}>&copy; </span>
+        <span>Doshisha University</span>
       </div>
 
       {/* カウントダウンタイマー */}
