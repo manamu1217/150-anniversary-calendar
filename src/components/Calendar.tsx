@@ -91,22 +91,31 @@ const Calendar: React.FC<CalendarProps> = ({
       <div className="absolute top-0 left-0 w-full h-1/6 bg-gradient-to-r from-pink-500/30 to-white-500/50"></div>
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-yellow-500/50 to-white-500/50"></div>
       {/* 左上の日時表示 */}
-      <div className="absolute top-4 left-4 text-white text-base sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-bold leading-loose md:leading-[2] lg:leading-[2.5] xl:leading-[3]">
+      <div className="absolute top-12 sm:top-4 left-4 text-white text-base sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-bold leading-loose md:leading-[2] lg:leading-[2.5] xl:leading-[3]">
         <p className="text-2xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-4xl mb-2">
           {currentDay.date.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()}
         </p>
         <p className="text-4xl sm:text-2xl md:text-4xl lg:text-6xl xl:text-6xl mb-2">
           {currentDay.date
-            .toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })
+            .toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
             .toUpperCase()}
         </p>
         <p className="text-2xl sm:text-2xl md:text-3xl lg:text-5xl xl:text-5xl mb-2">
-          -{time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}-
+          -
+          {time.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+          -
         </p>
       </div>
       {/* 右上に縦書きメッセージ（原稿用紙風表示） */}
       <div
-        className="absolute top-4 right-4 font-medium text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl  border-black border-double p-6 bg-white font-kaisei tracking-wide"
+        className="absolute top-12 sm:top-4 right-4 font-medium text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl  border-black border-double p-6 bg-white font-kaisei tracking-wide"
         style={{
           writingMode: "vertical-rl",
           textOrientation: "upright",
@@ -121,7 +130,11 @@ const Calendar: React.FC<CalendarProps> = ({
           <p
             key={index}
             className="mb-32"
-            style={{ marginTop: `${index * 4}rem`, paddingRight: "0.2rem", lineHeight: "1.5" }}
+            style={{
+              marginTop: `${index * 4}rem`,
+              paddingRight: "0.2rem",
+              lineHeight: "1.5",
+            }}
           >
             {line}
           </p>
