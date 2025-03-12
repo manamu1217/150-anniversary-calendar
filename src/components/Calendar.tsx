@@ -115,15 +115,14 @@ const Calendar: React.FC<CalendarProps> = ({
       </div>
       {/* 右上に縦書きメッセージ（原稿用紙風表示） */}
       <div
-        className="absolute top-12 sm:top-4 right-4 font-medium text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl  border-black border-double p-6 bg-white font-kaisei tracking-wide"
+        className="absolute top-12 sm:top-4 right-4 font-medium text-2xl sm:text-3xl md:text-3xl lg:text-4xl xl:text-4xl border-black border-double p-6 bg-white font-kaisei tracking-wide"
         style={{
           writingMode: "vertical-rl",
           textOrientation: "upright",
-          backgroundImage: "linear-gradient(180deg,rgb(255, 255, 255),rgb(255, 255, 255))",
-          backgroundClip: "text",
-          color: "transparent",
-          WebkitBackgroundClip: "text",
+          WebkitWritingMode: "vertical-rl", // For Webkit browsers (e.g. Safari)
           WebkitTextFillColor: "transparent",
+          WebkitBackgroundClip: "text",
+          backgroundImage: "linear-gradient(180deg,rgb(255, 255, 255),rgb(255, 255, 255))",
         }}
       >
         {messageLines.map((line, index) => (
