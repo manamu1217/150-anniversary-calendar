@@ -50,7 +50,7 @@ const Book: React.FC = () => {
       );
 
       const newDays: Day[] = [];
-      for (let i = diffDays - 49; i <= diffDays; i++) {
+      for (let i = diffDays - 20; i <= diffDays; i++) {
         const date = new Date(baseDate);
         date.setDate(baseDate.getDate() + i);
         newDays.push({ id: i, date });
@@ -93,11 +93,7 @@ const Book: React.FC = () => {
     const today: Date = new Date();
     const currentDate: Date | undefined = days[currentIndex]?.date;
 
-    if (
-      currentDate &&
-      currentIndex < days.length - 1 &&
-      days[currentIndex + 1].date <= today
-    ) {
+    if (currentDate && currentIndex < days.length - 1 && days[currentIndex + 1].date <= today) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -107,9 +103,7 @@ const Book: React.FC = () => {
       <HTMLFlipBook
         width={dimensions.width}
         height={dimensions.height}
-        startPage={
-          dimensions.isMobile ? days.length - 2 : 2 * (days.length - 1) - 1
-        }
+        startPage={dimensions.isMobile ? days.length - 2 : 2 * (days.length - 1) - 1}
         className="flipbook-container"
         maxShadowOpacity={0.5}
         mobileScrollSupport={true}
