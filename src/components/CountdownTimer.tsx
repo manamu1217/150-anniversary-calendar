@@ -2,28 +2,28 @@ import React from "react";
 import { useEvents } from "../hooks/useEvents";
 import { getDaysUntil } from "../utils/dateUtils";
 
-const CountdownTimer: React.FC = () => {
+interface CountdownTimerProps {
+  date: Date;
+}
+
+const CountdownTimer: React.FC<CountdownTimerProps> = ({ date }) => {
   const { events, loading } = useEvents();
 
   if (loading) return null;
 
-  const doshishaEvent = events.find(
-    (event) => event.title === "同志社創立150周年"
-  );
-  const otherEvents = events.filter(
-    (event) => event.title !== "同志社創立150周年"
-  );
+  const doshishaEvent = events.find((event) => event.title === "同志社創立150周年");
+  const otherEvents = events.filter((event) => event.title !== "同志社創立150周年");
 
   const upcomingEvents = [
     // Always include Doshisha anniversary if it's in the future
-    ...(doshishaEvent && getDaysUntil(doshishaEvent.date) > 0
-      ? [{ ...doshishaEvent, daysUntil: getDaysUntil(doshishaEvent.date) }]
+    ...(doshishaEvent && getDaysUntil(date, doshishaEvent.date) > 0
+      ? [{ ...doshishaEvent, daysUntil: getDaysUntil(date, doshishaEvent.date) }]
       : []),
     // Other events only within 30 days
     ...otherEvents
       .map((event) => ({
         ...event,
-        daysUntil: getDaysUntil(event.date),
+        daysUntil: getDaysUntil(date, event.date),
       }))
       .filter((event) => event.daysUntil <= 30 && event.daysUntil > 0),
   ].sort((a, b) => {
@@ -42,18 +42,12 @@ const CountdownTimer: React.FC = () => {
           <div
             key={event.title}
             className={`flex items-center justify-between space-x-4 text-sm md:text-base ${
-              event.title === "同志社創立150周年"
-                ? "text-yellow-300 font-bold"
-                : ""
+              event.title === "同志社創立150周年" ? "text-yellow-300 font-bold" : ""
             }`}
           >
             <span className="font-medium">{event.title}</span>
             <span
-              className={
-                event.title === "同志社創立150周年"
-                  ? "text-yellow-300"
-                  : "text-red-400"
-              }
+              className={event.title === "同志社創立150周年" ? "text-yellow-300" : "text-red-400"}
             >
               {event.daysUntil}日後
             </span>

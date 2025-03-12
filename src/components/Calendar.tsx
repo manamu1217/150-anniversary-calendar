@@ -153,13 +153,13 @@ const Calendar: React.FC<CalendarProps> = ({
         ))}
       </div>
 
-      <div className="absolute bottom-1 left-4 text-white text-base font-medium opacity-80 font-yuji">
-        <span style={{ fontSize: "1rem" }}>&copy; </span>
-        <span>Doshisha University</span>
+      <div className="absolute bottom-1 left-4 text-white text-base font-medium opacity-80 font-yuji flex items-center">
+        <span className="text-2xl mr-1 h-6">©</span>
+        <span className="h-6">Doshisha University</span>
       </div>
 
       {/* カウントダウンタイマー */}
-      <CountdownTimer />
+      <CountdownTimer date={currentDay.date} />
     </div>
   );
 };

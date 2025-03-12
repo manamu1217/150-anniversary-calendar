@@ -12,8 +12,7 @@ export const isFutureDate = (date: Date): boolean => {
   return date > today;
 };
 
-export const getDaysUntil = (targetDate: Date): number => {
-  const today = new Date();
-  const diffTime = targetDate.getTime() - today.getTime();
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+export const getDaysUntil = (startDate: Date, targetDate: Date): number => {
+  const diffTime = targetDate.getTime() - startDate.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1;
 };
