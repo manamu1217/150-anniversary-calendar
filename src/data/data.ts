@@ -1,4 +1,4 @@
-export const imagelength: number = 200;
+export const imagelength: number = 100;
 
 export const messages: string[][] = [
   [
