@@ -98,19 +98,27 @@ const Book: React.FC = () => {
     }
   };
 
+  if (loading || days.length === 0) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
+
   return (
     <div className="flex justify-center items-center w-full min-h-screen">
-      <HTMLFlipBook
-        width={dimensions.width}
-        height={dimensions.height}
-        startPage={dimensions.isMobile ? days.length - 2 : 2 * (days.length - 1) - 1}
-        className="flipbook-container"
-        maxShadowOpacity={0.5}
-        mobileScrollSupport={true}
-        drawShadow={true}
-      >
-        {days.flatMap(
-          (day) =>
+      {days.length > 0 && (
+        <HTMLFlipBook
+          width={dimensions.width}
+          height={dimensions.height}
+          startPage={
+            dimensions.isMobile
+              ? Math.max(0, days.length - 2)
+              : Math.max(0, 2 * (days.length - 1) - 1)
+          }
+          className="flipbook-container"
+          maxShadowOpacity={0.5}
+          mobileScrollSupport={true}
+          drawShadow={true}
+        >
+          {days.flatMap((day) =>
             [
               !dimensions.isMobile ? (
                 <div
@@ -118,7 +126,7 @@ const Book: React.FC = () => {
                   key={`cover-${day.id}`}
                 >
                   <h1 className="flex flex-col items-center justify-center text-black-600 text-2xl md:text-4xl font-medium h-full font-yuji">
-                    <img src="/public/icon/doshisha_calender.png" className="size-60"></img>
+                    <img src="/icon/doshisha_calender.png" className="size-60" />
                   </h1>
                 </div>
               ) : null,
@@ -130,9 +138,10 @@ const Book: React.FC = () => {
                   loading={loading}
                 />
               </div>,
-            ].filter((el): el is JSX.Element => el !== null) // 型安全に null を除去
-        )}
-      </HTMLFlipBook>
+            ].filter((el): el is JSX.Element => el !== null)
+          )}
+        </HTMLFlipBook>
+      )}
     </div>
   );
 };
