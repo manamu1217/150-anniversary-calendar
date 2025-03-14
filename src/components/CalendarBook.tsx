@@ -106,6 +106,7 @@ const Book: React.FC = () => {
     <div className="flex justify-center items-center w-full min-h-screen">
       {days.length > 0 && (
         <HTMLFlipBook
+          key={`${dimensions.width}-${dimensions.height}`}
           width={dimensions.width}
           height={dimensions.height}
           startPage={
