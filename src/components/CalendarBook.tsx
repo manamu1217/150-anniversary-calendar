@@ -126,7 +126,7 @@ const Book: React.FC = () => {
                   key={`cover-${day.id}`}
                 >
                   <h1 className="flex flex-col items-center justify-center text-black-600 text-2xl md:text-4xl font-medium h-full font-yuji">
-                    <img src="/public/icon/doshisha_calender.png" className="size-60" />
+                    <img src="/icon/doshisha_calender.png" className="size-60" />
                   </h1>
                 </div>
               ) : null,
