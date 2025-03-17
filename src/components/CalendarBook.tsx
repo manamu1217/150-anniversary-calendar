@@ -34,12 +34,13 @@ const Book: React.FC = () => {
         width: isMobile ? window.innerWidth : window.innerWidth / 2,
         height: window.innerHeight,
       });
+      console.log(dimensions);
     };
 
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
+  }, [window.innerWidth]);
 
   useEffect(() => {
     if (days.length === 0) {
