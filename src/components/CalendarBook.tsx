@@ -40,7 +40,7 @@ const Book: React.FC = () => {
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
+  }, [window.innerWidth]);
 
   useEffect(() => {
     if (days.length === 0) {
