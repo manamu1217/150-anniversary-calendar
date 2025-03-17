@@ -21,9 +21,9 @@ const Book: React.FC = () => {
   const [days, setDays] = useState<Day[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [dimensions, setDimensions] = useState<Dimensions>({
-    isMobile: false,
-    width: 800,
-    height: 800,
+    isMobile: window.innerWidth < 768,
+    width: window.innerWidth < 768 ? window.innerWidth : window.innerWidth / 2,
+    height: window.innerHeight,
   });
 
   useEffect(() => {
@@ -34,13 +34,13 @@ const Book: React.FC = () => {
         width: isMobile ? window.innerWidth : window.innerWidth / 2,
         height: window.innerHeight,
       });
-      console.log(dimensions);
     };
+    console.log(dimensions);
 
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, [window.innerWidth]);
+  }, []);
 
   useEffect(() => {
     if (days.length === 0) {
@@ -99,7 +99,7 @@ const Book: React.FC = () => {
     }
   };
 
-  if (loading || days.length === 0) {
+  if (loading || days.length === 0 || dimensions === null) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
 
