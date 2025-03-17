@@ -21,11 +21,12 @@ const Book: React.FC = () => {
   const [days, setDays] = useState<Day[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [dimensions, setDimensions] = useState<Dimensions>({
-    isMobile: window.innerWidth < 768,
-    width: window.innerWidth < 768 ? window.innerWidth : window.innerWidth / 2,
-    height: window.innerHeight,
+    isMobile: false,
+    width: 0,
+    height: 0,
   });
 
+  // Initialize dimensions correctly
   useEffect(() => {
     const updateDimensions = (): void => {
       const isMobile = window.innerWidth < 768;
@@ -35,12 +36,16 @@ const Book: React.FC = () => {
         height: window.innerHeight,
       });
     };
-    console.log(dimensions);
 
+    // Initial call
     updateDimensions();
+
+    // Add event listener
     window.addEventListener("resize", updateDimensions);
+
+    // Clean up
     return () => window.removeEventListener("resize", updateDimensions);
-  }, [window.innerWidth]);
+  }, []); // Remove window.innerWidth from dependency array
 
   useEffect(() => {
     if (days.length === 0) {
@@ -94,14 +99,28 @@ const Book: React.FC = () => {
     const today: Date = new Date();
     const currentDate: Date | undefined = days[currentIndex]?.date;
 
-    if (currentDate && currentIndex < days.length - 1 && days[currentIndex + 1].date <= today) {
+    if (
+      currentDate &&
+      currentIndex < days.length - 1 &&
+      days[currentIndex + 1].date <= today
+    ) {
       setCurrentIndex(currentIndex + 1);
     }
   };
 
-  if (loading || days.length === 0 || dimensions === null) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  // Show loading state if dimensions are not calculated yet
+  if (loading || days.length === 0 || dimensions.width === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
+
+  // Calculate the correct start page
+  const startPage = dimensions.isMobile
+    ? Math.max(0, days.length - 2)
+    : Math.max(0, 2 * Math.floor((days.length - 1) / 2));
 
   return (
     <div className="flex justify-center items-center w-full min-h-screen">
@@ -110,28 +129,35 @@ const Book: React.FC = () => {
           key={`${dimensions.width}-${dimensions.height}`}
           width={dimensions.width}
           height={dimensions.height}
-          startPage={
-            dimensions.isMobile
-              ? Math.max(0, days.length - 2)
-              : Math.max(0, 2 * (days.length - 1) - 1)
-          }
+          startPage={startPage}
           className="flipbook-container"
           maxShadowOpacity={0.5}
           mobileScrollSupport={true}
           drawShadow={true}
         >
-          {days.flatMap((day) =>
-            [
-              !dimensions.isMobile ? (
+          {days.flatMap((day) => {
+            const elements = [];
+
+            // Only add cover for desktop
+            if (!dimensions.isMobile) {
+              elements.push(
                 <div
                   className="flex flex-col items-center justify-center w-full h-full bg-white"
                   key={`cover-${day.id}`}
                 >
                   <h1 className="flex flex-col items-center justify-center text-black-600 text-2xl md:text-4xl font-medium h-full font-yuji">
-                    <img src="/icon/doshisha_calender.png" className="size-60" />
+                    <img
+                      src="/icon/doshisha_calender.png"
+                      className="size-60"
+                      alt="Doshisha Calendar"
+                    />
                   </h1>
                 </div>
-              ) : null,
+              );
+            }
+
+            // Always add the calendar page
+            elements.push(
               <div key={`calendar-${day.id}`} className="demoPage">
                 <Calendar
                   currentDay={day}
@@ -139,9 +165,11 @@ const Book: React.FC = () => {
                   onNextDay={handleNextDay}
                   loading={loading}
                 />
-              </div>,
-            ].filter((el): el is JSX.Element => el !== null)
-          )}
+              </div>
+            );
+
+            return elements;
+          })}
         </HTMLFlipBook>
       )}
     </div>
