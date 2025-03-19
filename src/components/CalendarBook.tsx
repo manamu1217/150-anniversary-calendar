@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import { useCalendarData } from "../hooks/useCalendarData";
 import Calendar from "./Calendar";
@@ -26,26 +26,56 @@ const Book: React.FC = () => {
     height: 0,
   });
 
-  // Initialize dimensions correctly
+  // Add a container ref to measure actual available space
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Improved dimensions calculation with minimum sizes and container-based measurement
   useEffect(() => {
     const updateDimensions = (): void => {
-      const isMobile = window.innerWidth < 768;
+      // Ensure we have a valid container to measure
+      if (!containerRef.current) return;
+
+      // Get container dimensions for more accurate sizing
+      const container = containerRef.current;
+      const rect = container.getBoundingClientRect();
+
+      // Determine if mobile based on container width rather than window
+      const isMobile = rect.width < 768;
+
+      // Set minimum dimensions to ensure visibility
+      const minWidth = 300;
+      const minHeight = 400;
+
+      // Calculate dimensions, ensuring they're never smaller than minimums
+      const width = Math.max(minWidth, isMobile ? rect.width : rect.width / 2);
+
+      const height = Math.max(
+        minHeight,
+        // Use 90% of available height for better visibility
+        rect.height * 1.0
+      );
+
       setDimensions({
         isMobile,
-        width: isMobile ? window.innerWidth : window.innerWidth / 2,
-        height: window.innerHeight,
+        width,
+        height,
       });
     };
 
-    // Initial call
-    updateDimensions();
+    // Initial call after a short delay to ensure container is rendered
+    const timer = setTimeout(() => {
+      updateDimensions();
+    }, 100);
 
     // Add event listener
     window.addEventListener("resize", updateDimensions);
 
     // Clean up
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []); // Remove window.innerWidth from dependency array
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+      clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
     if (days.length === 0) {
@@ -108,8 +138,8 @@ const Book: React.FC = () => {
     }
   };
 
-  // Show loading state if dimensions are not calculated yet
-  if (loading || days.length === 0 || dimensions.width === 0) {
+  // Improved loading display with min-height to prevent flicker
+  if (loading || days.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         Loading...
@@ -123,54 +153,61 @@ const Book: React.FC = () => {
     : Math.max(0, 2 * Math.floor((days.length - 1) / 2));
 
   return (
-    <div className="flex justify-center items-center w-full min-h-screen">
-      {days.length > 0 && (
-        <HTMLFlipBook
-          key={`${dimensions.width}-${dimensions.height}`}
-          width={dimensions.width}
-          height={dimensions.height}
-          startPage={startPage}
-          className="flipbook-container"
-          maxShadowOpacity={0.5}
-          mobileScrollSupport={true}
-          drawShadow={true}
-        >
-          {days.flatMap((day) => {
-            const elements = [];
+    <div
+      ref={containerRef}
+      className="flex justify-center items-center w-full min-h-screen"
+    >
+      {days.length > 0 && dimensions.width > 0 && (
+        <div className="w-full h-full flex justify-center items-center">
+          <HTMLFlipBook
+            key={`${dimensions.width}-${dimensions.height}`}
+            width={dimensions.width}
+            height={dimensions.height}
+            startPage={startPage}
+            className="flipbook-container"
+            maxShadowOpacity={0.5}
+            mobileScrollSupport={true}
+            drawShadow={true}
+            // Force re-render when dimensions change significantly
+            size="fixed"
+          >
+            {days.flatMap((day) => {
+              const elements = [];
 
-            // Only add cover for desktop
-            if (!dimensions.isMobile) {
+              // Only add cover for desktop
+              if (!dimensions.isMobile) {
+                elements.push(
+                  <div
+                    className="flex flex-col items-center justify-center w-full h-full bg-white"
+                    key={`cover-${day.id}`}
+                  >
+                    <h1 className="flex flex-col items-center justify-center text-black-600 text-2xl md:text-4xl font-medium h-full font-yuji">
+                      <img
+                        src="/icon/doshisha_calender.png"
+                        className="size-60"
+                        alt="Doshisha Calendar"
+                      />
+                    </h1>
+                  </div>
+                );
+              }
+
+              // Always add the calendar page
               elements.push(
-                <div
-                  className="flex flex-col items-center justify-center w-full h-full bg-white"
-                  key={`cover-${day.id}`}
-                >
-                  <h1 className="flex flex-col items-center justify-center text-black-600 text-2xl md:text-4xl font-medium h-full font-yuji">
-                    <img
-                      src="/icon/doshisha_calender.png"
-                      className="size-60"
-                      alt="Doshisha Calendar"
-                    />
-                  </h1>
+                <div key={`calendar-${day.id}`} className="demoPage">
+                  <Calendar
+                    currentDay={day}
+                    onPrevDay={handlePrevDay}
+                    onNextDay={handleNextDay}
+                    loading={loading}
+                  />
                 </div>
               );
-            }
 
-            // Always add the calendar page
-            elements.push(
-              <div key={`calendar-${day.id}`} className="demoPage">
-                <Calendar
-                  currentDay={day}
-                  onPrevDay={handlePrevDay}
-                  onNextDay={handleNextDay}
-                  loading={loading}
-                />
-              </div>
-            );
-
-            return elements;
-          })}
-        </HTMLFlipBook>
+              return elements;
+            })}
+          </HTMLFlipBook>
+        </div>
       )}
     </div>
   );
