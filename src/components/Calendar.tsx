@@ -91,7 +91,7 @@ const Calendar: React.FC<CalendarProps> = ({
       <div className="absolute top-0 left-0 w-full h-1/6 bg-gradient-to-r from-pink-500/30 to-white-500/50"></div>
       <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-yellow-500/50 to-white-500/50"></div>
       {/* 左上の日時表示 */}
-      <div className="absolute top-32 sm:top-4 left-4 text-white text-sm sm:text-lg md:text-xl lg:text-3xl xl:text-4xl font-bold leading-tight md:leading-[1.5] lg:leading-[1.8] xl:leading-[2]">
+      <div className="absolute top-28 sm:top-4 left-4 text-white text-sm sm:text-lg md:text-xl lg:text-3xl xl:text-4xl font-bold leading-tight md:leading-[1.5] lg:leading-[1.8] xl:leading-[2]">
         <p className="text-lg sm:text-lg md:text-xl lg:text-3xl xl:text-3xl mb-1">
           {currentDay.date
             .toLocaleDateString("en-US", { weekday: "long" })
